@@ -1,7 +1,6 @@
 import sys
 sys.path.append("/data/home/spektor/clip")
 import os.path as osp
-import argparse
 
 import torch
 import torch.nn as nn
@@ -16,19 +15,13 @@ from clip_simple_classifier.dataset import JsonDataset, collate_fn, random_split
 
 from config import Config
 
-# HIDDEN_DIM = 512
-# MAX_SEQ_LENGTH = 64
-# EPOCHS = 100
-# BATCH_SIZE = 64
-# CHECKPOINT_INTERVAL = 5
-
 def main():
     wandb.init(project='clip-classifier-training')
     config = Config()
     wandb.config.update(vars(config))
     
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu") # if GPU is unavailable
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cpu") # if GPU is unavailable
     clip_classifier = CLIPClassifier(config.hidden_dim, config.num_classes).to(device)
     optimizer = Adam(clip_classifier.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
