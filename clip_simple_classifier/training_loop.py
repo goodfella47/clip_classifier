@@ -61,14 +61,18 @@ def main():
 
             total_loss += loss.item()
             # Compute the number of correct predictions and update the total
-            total_correct += (logits.argmax(1) == labels).float().sum().item()
+            correct = (logits.argmax(1) == labels).float().sum().item()
+            batch_accuracy = correct / labels.size(0)
+            total_correct += correct
             total_samples += labels.size(0)
+        
+            wandb.log({"Batch Loss": loss.item(), "Batch Accuracy": batch_accuracy})
         
         # Compute the average loss and accuracy
         avg_loss = total_loss / len(train_dataloader)
         avg_accuracy = total_correct / total_samples
         
-        wandb.log({"Train Loss": avg_loss, "Train Accuracy": avg_accuracy})
+        wandb.log({"Epoch Loss": avg_loss, "Epoch Accuracy": avg_accuracy})
         
         # Validation
         clip_classifier.eval()
