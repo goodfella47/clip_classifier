@@ -29,7 +29,15 @@ def main():
     dataset = JsonDataset(config.annot_path, config.num_classes, config.max_seq_length)
     
     train, val = random_split(dataset, [0.8, 0.2])
-    train_dataloader = DataLoader(train, batch_size=config.batch_size, shuffle=True, collate_fn=collate_fn)
+    train_dataloader = DataLoader(train, 
+                                  batch_size=config.batch_size, 
+                                  shuffle=True, 
+                                  collate_fn=collate_fn,
+                                  num_workers=5,
+                                  pin_memory=True,
+                                  persistent_workers=True,
+                                  multiprocessing_context='forkserver' 
+                                  )
     val_dataloader = DataLoader(val, batch_size=config.batch_size, shuffle=False, collate_fn=collate_fn)
 
     # Train the model
